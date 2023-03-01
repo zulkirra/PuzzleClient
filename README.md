@@ -15,44 +15,89 @@ roomName/state
 
 ### Payload Types ###
 There are a total of 6 different payload types that are compatible with Electron Escape.
-- [State](#State) - e.g. `roomName/puzzleName/state` or `roomName/state`
-- [Insights](#Insights) - e.g. `roomName/puzzleName/insights`
-- [Set](#Set) - e.g. `roomName/puzzleName/set`
-- [Command](#Command) - e.g. `roomName/puzzleName/command`
-- [Logs](#Logs) - e.g. `roomName/puzzleName/logs`
-- [Connected](#Connected)- e.g. `roomName/puzzleName/connected`
 
-#### State ####
-The state controls what current state the puzzle or room is currently in. Each state has an `on` function and a `loop` function. The `on` function runs the first time the state has been changed whereas the `loop` function runs continously every loop while that state is selected. There are 5 different states that exist to cover most functions:
-- 0 `Ready` - The puzzle is ready to be put into the `Active` state.
-- 1 `Active` - The puzzle currently running and can be put into the `Finished` or `Paused` state.
-- 2 `Paused` - The puzzle is currently paused and nothing can be solved unless returned to the `Active` state
-- 3 `Finished` - The puzzle has been solved/completed and is ready to be put into the `Resetting` state.
-- 4 `Resetting` - The puzzle is being reset. Conventionally this returns to the `Ready` state once it has finished resetting.
+<details>
+  <summary><b>State</b></summary>
+  
+  The state controls what current state the puzzle or room is currently in. Each state has an `on` function and a `loop` function. The `on` function runs the first time the state has been changed whereas the `loop` function runs continously every loop that state is selected. There are 5 different states that exist:
+    
+  - 0 `Ready` - The puzzle is ready to be put into the `Active` state.
+  - 1 `Active` - The puzzle currently running and can be put into the `Finished` or `Paused` state.
+  - 2 `Paused` - The puzzle is currently paused and nothing can be solved unless returned to the `Active` state
+  - 3 `Finished` - The puzzle has been solved/completed and is ready to be put into the `Resetting` state.
+  - 4 `Resetting` - The puzzle is being reset. Conventionally this returns to the `Ready` state once it has finished resetting.
 
-Keep in mind that the states do not have to follow the order provided and will often need to jump between the different states as required by the Electron Escape users. The same state can also be sent to a puzzle multiple times which will trigger the `on` function every time a state has been sent.
+  Keep in mind that the states do not have to follow the order provided and will often need to jump between the different states as required by the Electron Escape users. The same state can also be sent to a puzzle multiple times which will trigger the `on` function every time a state has been sent.
 
-Any payload sent to the state topic must constist of a variable named `state` and an integer declaring what state to be set to. An example payload that will set the state to `Ready`:
-```JSON
-{ "state": 0 }
-```
+  Any payload sent to `roomName/puzzleName/state` must constist of a variable named `state` and an integer declaring what to set the state to. An example payload that will set the state to `Ready` is:
+  ```JSON
+  { "state": 0 }
+  ```
+  
+  *Similar to puzzles, the state of the room can also be changed by sending the payload to `roomName/state` instead.*
+  
+  A few helpful mosquitto commands to manage the state of a puzzle or room:
+  - `mosquitto_sub -h 192.168.20.100 -t roomName/puzzleName/state -v` - Display the state of the puzzle.
+  - `mosquitto_sub -h 192.168.20.100 -t roomName/+/state -v` - Display the state for every puzzle in the room.
+  - `mosquitto_sub -h 192.168.20.100 -t roomName/state -v` - Display the state of the room.
+  - `mosquitto_pub -h 192.168.20.100 -t roomName/puzzleName/state -m "{\"state\":0}"` - Set the state of the puzzle (in this case to `Ready`).
+  - `mosquitto_pub -h 192.168.20.100 -t roomName/state -m "{\"state\":0}"` - Set the state of the room (in this case to `Ready`).
+  
+</details>
 
-*Similar to puzzles, the state of the room can also be changed by sending the payload to `roomName/state` instead.*
+<details>
+  <summary><b>Insights</b></summary>
 
-A few helpful mosquitto commands to manage the state of a puzzle or room:
-- `mosquitto_sub -h 192.168.20.100 -t roomName/puzzleName/state -v` - Display the state of the puzzle.
-- `mosquitto_sub -h 192.168.20.100 -t roomName/+/state -v` - Display the state for every puzzle in the room.
-- `mosquitto_sub -h 192.168.20.100 -t roomName/state -v` - Display the state of the room.
-- `mosquitto_pub -h 192.168.20.100 -t roomName/puzzleName/state -m "{\"state\":0}"` - Set the state of the puzzle (in this case to `Ready`).
-- `mosquitto_pub -h 192.168.20.100 -t roomName/state -m "{\"state\":0}"` - Set the state of the room (in this case to `Ready`).
+  The insights payload type is where puzzles are able to send data about what is currently happening (such as a button being pressed) so that Electron Escape can display the information to the user. Insights is not necessary for every puzzle but can be useful when debugging issues or without direct access to the puzzle.
 
-#### Insights ####
-Insights helps Electron Escape to be able to display what is happening with that particular device
+  Any payload sent to `roomName/puzzleName/insights` must have atleast 1 variable and must consist of all the variables to be displayed on Electron Escape. The variables can be named anything however it must link up with the variables set on Electron Escape to be able to display the correct data. The variables can be a mixture of any regular data types.
 
-#### Set ####
+  An example of a payload that consists of a single variable:
+  ```JSON
+  { "maglock": false }
+  ```
+  
+  An example of a payload that consists of multiple variables:
+  ```JSON
+  {
+    "switch": "on",
+    "weight": 144,
+    "maglock": true
+  }
+  ```
 
-#### Command ####
+  A few helpful mosquitto commands to see the insights of puzzles
+  - `mosquitto_sub -h 192.168.20.100 -t roomName/puzzleName/insights -v` - Display the insights for the puzzle.
+  - `mosquitto_sub -h 192.168.20.100 -t roomName/+/insights -v` - Display the insights for every puzzle in a room.
 
-#### Logs ####
+</details>
 
-#### Connected ####
+<details>
+  <summary><b>Set</b></summary>
+
+
+
+</details>
+
+<details>
+  <summary><b>Command</b></summary>
+
+
+
+</details>
+
+
+<details>
+  <summary><b>Logs</b></summary>
+
+
+
+</details>
+
+
+<details>
+  <summary><b>Connected</b></summary>
+
+
+
+</details>
