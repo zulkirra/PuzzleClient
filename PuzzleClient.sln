@@ -1,13 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33205.214
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33214.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PuzzleClient", "PuzzleClient.vcxitems", "{8BF8C23B-6909-4693-BC87-F3F27C9A1F58}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Playground", "..\..\Playground\Playground.vcxproj", "{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Playground", "..\..\Playground\Playground.vcxproj", "{58648392-8636-49C5-87A3-4F1A076490A8}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\ArduinoJson\ArduinoJson-6.20.1.vcxitems*{58648392-8636-49c5-87a3-4f1a076490a8}*SharedItemsImports = 4
+		..\PubSubClient\PubSubClient-2.8.vcxitems*{58648392-8636-49c5-87a3-4f1a076490a8}*SharedItemsImports = 4
+		PuzzleClient.vcxitems*{58648392-8636-49c5-87a3-4f1a076490a8}*SharedItemsImports = 4
+		PuzzleClient.vcxitems*{8bf8c23b-6909-4693-bc87-f3f27c9a1f58}*SharedItemsImports = 9
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
 		Debug|ARM64 = Debug|ARM64
@@ -15,27 +21,23 @@ Global
 		Release|ARM64 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Debug|ARM.ActiveCfg = Debug|ARM
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Debug|ARM.Build.0 = Debug|ARM
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Debug|ARM.Deploy.0 = Debug|ARM
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Debug|ARM64.Build.0 = Debug|ARM64
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Debug|ARM64.Deploy.0 = Debug|ARM64
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Release|ARM.ActiveCfg = Release|ARM
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Release|ARM.Build.0 = Release|ARM
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Release|ARM.Deploy.0 = Release|ARM
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Release|ARM64.ActiveCfg = Release|ARM64
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Release|ARM64.Build.0 = Release|ARM64
-		{5E2983EE-822D-4D7B-9D74-7DCE3FEA0F40}.Release|ARM64.Deploy.0 = Release|ARM64
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Debug|ARM.ActiveCfg = Debug|ARM
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Debug|ARM.Build.0 = Debug|ARM
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Debug|ARM.Deploy.0 = Debug|ARM
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Debug|ARM64.Build.0 = Debug|ARM64
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Release|ARM.ActiveCfg = Release|ARM
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Release|ARM.Build.0 = Release|ARM
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Release|ARM.Deploy.0 = Release|ARM
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Release|ARM64.ActiveCfg = Release|ARM64
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Release|ARM64.Build.0 = Release|ARM64
+		{58648392-8636-49C5-87A3-4F1A076490A8}.Release|ARM64.Deploy.0 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05BF8CAA-DE6C-4E89-8D33-A9BB2E5A7ECB}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		PuzzleClient.vcxitems*{5e2983ee-822d-4d7b-9d74-7dce3fea0f40}*SharedItemsImports = 4
-		PuzzleClient.vcxitems*{8bf8c23b-6909-4693-bc87-f3f27c9a1f58}*SharedItemsImports = 9
 	EndGlobalSection
 EndGlobal
