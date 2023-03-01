@@ -94,10 +94,25 @@ There are a total of 6 different payload types that are compatible with Electron
 
 </details>
 
-
 <details>
   <summary><b>Connected</b></summary>
 
+  PuzzleClient handles the connection status of every puzzle. Whenever the puzzle connects or disconnects from the server a payload is automatically sent to `roomName/puzzleName/connected`. There are only 2 different payloads that are sent to this topic, one for when the puzzle connects and the other for when it disconnects. 
 
+  The connection payload is sent as soon as the puzzle has connected to the server. This payload looks like:
+  ```JSON
+  { "connected": true }
+  ```
+
+  Once the puzzle has connected to the server, both the server and the puzzle send pings back and forth to check if the puzzle is still connected. If the server no longer detects that the puzzle is connected then it will send a disconnected payload to the same topic, which looks like:
+  ```JSON
+  { "connected": false }
+  ```
+
+   A few helpful mosquitto commands to see the connection status of a puzzle
+  - `mosquitto_sub -h 192.168.20.100 -t roomName/puzzleName/connected -v` - Display the connection status for the puzzle.
+  - `mosquitto_sub -h 192.168.20.100 -t roomName/+/connected -v` - Display the connection status for every puzzle in a room.
 
 </details>
+
+
