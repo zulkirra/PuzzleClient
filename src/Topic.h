@@ -22,7 +22,10 @@ class Topic {
 		Topic(const char* baseTopic);
 
 		Topic& append(const char* subTopic);
+
 		const char* get();
+		int compare(Topic topic);
+		int compare(const char* topic);
 
 		bool isEmpty();
 };

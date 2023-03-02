@@ -11,7 +11,7 @@ Topic::Topic() {
 	this->_isEmpty = true;
 }
 Topic::Topic(const char* baseTopic) {
-	this->_topic = (char*) baseTopic;
+	this->_topic = (char*)baseTopic;
 	this->_isEmpty = false;
 }
 
@@ -33,6 +33,12 @@ Topic& Topic::append(const char* subTopic) {
 
 const char* Topic::get() {
 	return this->_topic;
+}
+int Topic::compare(Topic topic) {
+	return compare(topic.get());
+}
+int Topic::compare(const char* topic) {
+	return strcmp(this->_topic, topic);
 }
 
 bool Topic::isEmpty() {

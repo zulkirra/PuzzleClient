@@ -63,8 +63,8 @@ void PuzzleClient::setServer(IPAddress ip, uint16_t port) {
 void PuzzleClient::setServer(uint8_t* ip, uint16_t port) {
 	client.setServer(ip, port);
 }
-void PuzzleClient::setCallback(CLIENT_CALLBACK) {
-	this->clientCallback = clientCallback;
+void PuzzleClient::setCallback(MQTT_CALLBACK_SIGNATURE) {
+	client.setCallback(callback);
 }
 void PuzzleClient::setReadySetup(READY_SETUP) {
 	this->readySetup = readySetup;
@@ -155,6 +155,10 @@ bool PuzzleClient::reconnect() {
 
 	return connected();
 }
+void PuzzleClient::disconnect() {
+	log("Disconnecting from server");
+	client.disconnect();
+}
 
 void PuzzleClient::loop() {
 	if (connected()) client.loop();
@@ -178,8 +182,36 @@ void PuzzleClient::loop() {
 	else if (this->_state == Finished && finishedLoop) finishedLoop();
 	else if (this->_state == Resetting && resettingLoop) resettingLoop();
 }
-void baseCallback(char* topic, uint8_t* payload, unsigned int length) {
-	
+void PuzzleClient::callback(char* topic, uint8_t* payload, unsigned int length) {
+	StaticJsonDocument<MQTT_MAX_PACKET_SIZE> doc;
+	deserializeJson(doc, payload);
+
+	// Make sure the puzzle is connected at all times
+	Topic topicConnected = Topic(this->_puzzleTopic.get()).append("connected");
+	if (topicConnected.compare(topic) == 0) {
+		if (doc.containsKey("connected") && doc["connected" == false]) {
+			client.publish(topicConnected.get(), "{\"connected\":true}", true);
+		}
+	}
+
+	// Update the state
+	Topic topicState = this->_puzzleTopic.isEmpty()
+		? Topic(this->_roomTopic.get()).append("state")
+		: Topic(this->_puzzleTopic.get()).append("state");
+	if (topicState.compare(topic) == 0) {
+		if (doc.containsKey("state")) {
+			PuzzleState newState = doc["state"].as<PuzzleState>();
+
+			// Make sure this puzzle doesn't trigger the state setup when connecting again
+			if (doc.containsKey("clientId") && strcmp(doc["clientId"].as<const char*>(), this->_clientId) == 0) {
+				setState(newState, false, false);
+			} else {
+				setState(newState, false, true);
+			}
+		}
+	}
+
+
 }
 
 void PuzzleClient::subscribe(Topic topic) {

@@ -17,7 +17,6 @@
 
 #define RECONNECT_INTERVAL	5000
 
-#define CLIENT_CALLBACK void(*clientCallback)(char*, uint8_t*, unsigned int)
 #define READY_SETUP		void(*readySetup)()
 #define READY_LOOP		void(*readyLoop)()
 #define ACTIVE_SETUP	void(*activeSetup)()
@@ -44,9 +43,7 @@ class PuzzleClient {
 		Topic _roomTopic;
 		Topic _puzzleTopic;
 		PuzzleState _state;
-		bool _stateChanged;
-
-		CLIENT_CALLBACK;
+		bool _stateChanged;     
 
 		READY_SETUP;
 		READY_LOOP;
@@ -72,7 +69,7 @@ class PuzzleClient {
 
 		void setServer(IPAddress ip, uint16_t port = 1883);
 		void setServer(uint8_t * ip, uint16_t port = 1883);
-		void setCallback(CLIENT_CALLBACK);
+		void setCallback(MQTT_CALLBACK_SIGNATURE);
 		void setReadySetup(READY_SETUP);
 		void setReadyLoop(READY_LOOP);
 		void setActiveSetup(ACTIVE_SETUP);
@@ -94,7 +91,7 @@ class PuzzleClient {
 		void disconnect();
 
 		void loop();
-		void baseCallback(char* topic, uint8_t* payload, unsigned int length);
+		void callback(char* topic, uint8_t* payload, unsigned int length);
 
 		void subscribe(Topic topic);
 		void subscribe(const char* topic);

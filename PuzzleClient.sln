@@ -35,8 +35,6 @@ Global
 		SolutionGuid = {05BF8CAA-DE6C-4E89-8D33-A9BB2E5A7ECB}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\ArduinoJson\ArduinoJson-6.20.1.vcxitems*{58648392-8636-49c5-87a3-4f1a076490a8}*SharedItemsImports = 4
-		..\PubSubClient\PubSubClient-2.8.vcxitems*{58648392-8636-49c5-87a3-4f1a076490a8}*SharedItemsImports = 4
 		PuzzleClient.vcxitems*{58648392-8636-49c5-87a3-4f1a076490a8}*SharedItemsImports = 4
 		PuzzleClient.vcxitems*{8bf8c23b-6909-4693-bc87-f3f27c9a1f58}*SharedItemsImports = 9
 	EndGlobalSection
