@@ -29,7 +29,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)README.md" />
-  </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
 PuzzleClient::PuzzleClient(const char* clientId, Topic roomTopic) {
 	this->_clientId = clientId;
 	this->_roomTopic = roomTopic;
+	this->_stateChanged = true;
 
 	// Subscribe to all required topics for a puzzle
 	Topic topicRoomState = Topic(this->_roomTopic.get()).append("state");
@@ -17,6 +18,7 @@ PuzzleClient::PuzzleClient(const char* clientId, Topic roomTopic) {
 PuzzleClient::PuzzleClient(const char* clientId, const char* roomTopic) {
 	this->_clientId = clientId;
 	this->_roomTopic = Topic(roomTopic);
+	this->_stateChanged = true;
 
 	// Subscribe to all required topics for a puzzle
 	Topic topicRoomState = Topic(this->_roomTopic.get()).append("state");
@@ -26,7 +28,8 @@ PuzzleClient::PuzzleClient(const char* clientId, Topic roomTopic, Topic puzzleTo
 	this->_clientId = clientId;
 	this->_roomTopic = roomTopic;
 	this->_puzzleTopic = puzzleTopic;
-	
+	this->_stateChanged = true;
+
 	// Subscribe to all required topics for a puzzle
 	Topic topicState = Topic(this->_puzzleTopic.get()).append("state");
 	Topic topicSet = Topic(this->_puzzleTopic.get()).append("set");
@@ -41,6 +44,7 @@ PuzzleClient::PuzzleClient(const char* clientId, const char* roomTopic, const ch
 	this->_clientId = clientId;
 	this->_roomTopic = Topic(roomTopic);
 	this->_puzzleTopic = Topic(roomTopic).append(puzzleTopic);
+	this->_stateChanged = true;
 
 	// Subscribe to all required topics for a puzzle
 	Topic topicState		= Topic(this->_puzzleTopic.get()).append("state");
@@ -59,15 +63,56 @@ void PuzzleClient::setServer(IPAddress ip, uint16_t port) {
 void PuzzleClient::setServer(uint8_t* ip, uint16_t port) {
 	client.setServer(ip, port);
 }
-void PuzzleClient::setCallback(MQTT_CALLBACK_SIGNATURE) {
-	client.setCallback(callback);
+void PuzzleClient::setCallback(CLIENT_CALLBACK) {
+	this->clientCallback = clientCallback;
+}
+void PuzzleClient::setReadySetup(READY_SETUP) {
+	this->readySetup = readySetup;
+}
+void PuzzleClient::setReadyLoop(READY_LOOP) {
+	this->readyLoop = readyLoop;
+}
+void PuzzleClient::setActiveSetup(ACTIVE_SETUP) {
+	this->activeSetup = activeSetup;
+}
+void PuzzleClient::setActiveLoop(ACTIVE_LOOP) {
+	this->activeLoop = activeLoop;
+}
+void PuzzleClient::setPausedSetup(PAUSED_SETUP) {
+	this->pausedSetup = pausedSetup;
+}
+void PuzzleClient::setPausedLoop(PAUSED_LOOP) {
+	this->pausedLoop = pausedLoop;
+}
+void PuzzleClient::setFinishedSetup(FINISHED_SETUP) {
+	this->finishedSetup = finishedSetup;
+}
+void PuzzleClient::setFinishedLoop(FINISHED_LOOP) {
+	this->finishedLoop = finishedLoop;
+}
+void PuzzleClient::setResettingSetup(RESETTING_SETUP) {
+	this->resettingSetup = resettingSetup;
+}
+void PuzzleClient::setResettingLoop(RESETTING_LOOP) {
+	this->resettingLoop = resettingLoop;
 }
 void PuzzleClient::setClient(Client& netClient) {
 	client.setClient(netClient);
 }
 
-void PuzzleClient::setState(PuzzleState state) {
+void PuzzleClient::setState(PuzzleState state, bool publishState, bool triggerStateSetup) {
+	// Publish the state change
+	if (publishState) {
+		Topic topicState = Topic(this->_puzzleTopic.get()).append("state");
+		StaticJsonDocument<MQTT_MAX_PACKET_SIZE> doc;
+		doc["state"] = state;
+		publish(topicState, doc, MQTT_MAX_PACKET_SIZE);
+	}
+
+	// Update the state
 	this->_state = state;
+	if (triggerStateSetup) this->_stateChanged = true;
+	log(3, "State set to '", stateToString(state), "'");
 }
 PuzzleState PuzzleClient::getState() {
 	return this->_state;
@@ -114,6 +159,27 @@ bool PuzzleClient::reconnect() {
 void PuzzleClient::loop() {
 	if (connected()) client.loop();
 	else reconnect();
+
+	// Check if the state has changed this loop
+	if (this->_stateChanged) {
+		this->_stateChanged = false;
+
+		// Run the new states setup function
+		if (this->_state == Ready && readySetup) readySetup();
+		else if (this->_state == Active && activeSetup) activeSetup();
+		else if (this->_state == Paused && pausedSetup) pausedSetup();
+		else if (this->_state == Finished && finishedSetup) finishedSetup();
+		else if (this->_state == Resetting && resettingSetup) resettingSetup();
+	}
+	// Run the loop function for the current state
+	if (this->_state == Ready && readyLoop) readyLoop();
+	else if (this->_state == Active && activeLoop) activeLoop();
+	else if (this->_state == Paused && pausedLoop) pausedLoop();
+	else if (this->_state == Finished && finishedLoop) finishedLoop();
+	else if (this->_state == Resetting && resettingLoop) resettingLoop();
+}
+void baseCallback(char* topic, uint8_t* payload, unsigned int length) {
+	
 }
 
 void PuzzleClient::subscribe(Topic topic) {
@@ -134,11 +200,23 @@ void PuzzleClient::subscribe(const char* topic) {
 	// Add the topic if it doesn't exist in the list
 	this->_topics.add(Topic(topic));
 }
-void PuzzleClient::publish(Topic topic, JsonDocument& doc, const size_t size, bool retain, bool sender) {
-	publish(topic.get(), doc, size, retain, sender);
+void PuzzleClient::publish(Topic topic, JsonDocument& doc, const size_t size, bool sender) {
+	publish(topic.get(), doc, size);
 }
-void PuzzleClient::publish(const char* topic, JsonDocument& doc, const size_t size, bool retain, bool sender) {
+void PuzzleClient::publish(const char* topic, JsonDocument& doc, const size_t size, bool sender) {
+	if (!connected())
+		return;
 
+	// Add the sender if required
+	if(sender) doc["clientId"] = this->_clientId;
+
+	// Create the payload
+	char payload[size];
+	serializeJson(doc, payload, size);
+
+	// Send the message
+	log(5, "Sending '", payload, "' to topic '", topic, "'");
+	client.publish(topic, payload);
 }
 void PuzzleClient::unsubscribe(Topic topic) {
 	unsubscribe(topic.get());
@@ -157,8 +235,8 @@ void PuzzleClient::unsubscribe(const char* topic) {
 	}
 }
 
-
 void PuzzleClient::log(const char* message) {
+	if (Serial) Serial.println(message);
 	if (!connected())
 		return;
 
@@ -188,9 +266,6 @@ void PuzzleClient::log(const char* message) {
 	delete payload;
 }
 void PuzzleClient::log(int count, ...) {
-	if (!connected())
-		return;
-
 	LinkedList<const char*> messageParts;
 	int size = 1;
 

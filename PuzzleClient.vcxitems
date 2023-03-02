@@ -24,7 +24,4 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Topic.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)README.md" />
-  </ItemGroup>
 </Project>
