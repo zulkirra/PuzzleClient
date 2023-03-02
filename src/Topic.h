@@ -14,6 +14,7 @@ class Topic {
 
 	private:
 		char* _topic;
+		bool _isEmpty;
 
 
 	public:
@@ -21,7 +22,9 @@ class Topic {
 		Topic(const char* baseTopic);
 
 		Topic& append(const char* subTopic);
-		const char* c_str();
+		const char* get();
+
+		bool isEmpty();
 };
 
 
