@@ -18,10 +18,12 @@
     <Text Include="$(MSBuildThisFileDirectory)src\PuzzleClient.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Insight.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\PuzzleClient.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Topic.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Insight.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\Topic.h" />
   </ItemGroup>
 </Project>
