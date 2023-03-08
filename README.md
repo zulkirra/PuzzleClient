@@ -19,7 +19,7 @@ There are a total of 6 different payload types that are compatible with Electron
 <details>
   <summary><b>State</b></summary>
   
-  The state controls what current state the puzzle or room is currently in. Each state has an `on` function and a `loop` function. The `on` function runs the first time the state has been changed whereas the `loop` function runs continously every loop that state is selected. There are 5 different states that exist:
+  The state controls what current state the puzzle or room is currently in. Each state has an `active` function and a `loop` function. The `active` function runs the first time the state has been changed whereas the `loop` function runs continously every loop in which state is selected. There are 5 different states that exist:
     
   - 0 `Ready` - The puzzle is ready to be put into the `Active` state.
   - 1 `Active` - The puzzle currently running and can be put into the `Finished` or `Paused` state.
@@ -27,7 +27,7 @@ There are a total of 6 different payload types that are compatible with Electron
   - 3 `Finished` - The puzzle has been solved/completed and is ready to be put into the `Resetting` state.
   - 4 `Resetting` - The puzzle is being reset. Conventionally this returns to the `Ready` state once it has finished resetting.
 
-  Keep in mind that the states do not have to follow the order provided and will often need to jump between the different states as required by the Electron Escape users. The same state can also be sent to a puzzle multiple times which will trigger the `on` function every time a state has been sent.
+  Keep in mind that the states do not have to follow the order provided and will often need to jump between the different states as required by the Electron Escape users. The same state can also be sent to a puzzle multiple times which will trigger the `active` function every time a state has been sent.
 
   Any payload sent to `roomName/puzzleName/state` must constist of a variable named `state` and an integer declaring what to set the state to. An example payload that will set the state to `Ready` is:
   ```JSON
