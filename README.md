@@ -19,7 +19,7 @@ There are a total of 6 different payload types that are compatible with Electron
 <details>
   <summary><b>State</b></summary>
   
-  The state controls what current state the puzzle or room is currently in. Each state has an `active` function and a `loop` function. The `active` function runs the first time the state has been changed whereas the `loop` function runs continously every loop in which state is selected. There are 5 different states that exist:
+  The state controls what current state the puzzle or room is currently in. Each state has an `active` function and a `loop` function. The `active` function runs the first time the state has been changed whereas the `loop` function runs continously every loop for whatever state is selected. There are 5 different states that exist:
     
   - 0 `Ready` - The puzzle is ready to be put into the `Active` state.
   - 1 `Active` - The puzzle currently running and can be put into the `Finished` or `Paused` state.
